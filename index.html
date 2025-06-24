@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 15: React Accordion</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const faqData = [
+            {
+                question: 'What is React?',
+                answer: 'React is a free and open-source front-end JavaScript library for building user interfaces based on UI components. It is maintained by Meta and a community of individual developers and companies.'
+            },
+            {
+                question: 'What is JSX?',
+                answer: 'JSX (JavaScript XML) is a syntax extension for JavaScript. It lets you write HTML-like markup inside a JavaScript file. Although there are other ways to write components, most React developers prefer JSX for its simplicity.'
+            },
+            {
+                question: 'How do you manage state in React?',
+                answer: 'State is managed using the `useState` hook. This hook returns an array containing the current state value and a function to update it. When the state is updated, React automatically re-renders the component.'
+            },
+            {
+                question: 'What are props?',
+                answer: 'Props (short for "properties") are read-only attributes that are passed from a parent component to a child component. They are the primary way to configure child components and pass data down the component tree.'
+            }
+        ];
+
+        const AccordionItem = ({ item, isOpen, onClick }) => {
+            return (
+                <div className="border-b border-gray-200">
+                    <button 
+                        onClick={onClick}
+                        className="w-full flex justify-between items-center text-left py-4 px-5 text-lg font-semibold text-gray-700 hover:bg-gray-50 focus:outline-none"
+                    >
+                        <span>{item.question}</span>
+                        <i className={`fas fa-chevron-down transition-transform duration-300 ${isOpen ? 'transform rotate-180' : ''}`}></i>
+                    </button>
+                    {/* Conditional Rendering: The content div is only rendered if `isOpen` is true */}
+                    <div
+                        className={`overflow-hidden transition-all duration-500 ease-in-out ${isOpen ? 'max-h-96' : 'max-h-0'}`}
+                    >
+                         <div className="p-5 pt-0 text-gray-600">
+                            {item.answer}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Parent Component: Accordion ---
+        const Accordion = ({ data }) => {
+
+            const [openIndex, setOpenIndex] = React.useState(null);
+
+            const handleClick = (index) => {
+                setOpenIndex(openIndex === index ? null : index);
+            };
+
+            return (
+                <div className="w-full max-w-2xl bg-white rounded-xl shadow-lg">
+                    {}
+                    {data.map((item, index) => (
+                        <AccordionItem
+                            key={index} 
+                            item={item}
+                            isOpen={openIndex === index} // Is this item the one that's currently open?
+                            onClick={() => handleClick(index)} // Pass the function to handle the click.
+                        />
+                    ))}
+                </div>
+            );
+        };
+        
+        // --- Main App Component ---
+        const App = () => {
+            return (
+                <div>
+                    <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">React FAQ Accordion</h1>
+                    <Accordion data={faqData} />
+                </div>
+            );
+        };
+
+
+        // --- Rendering the App ---
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+
+</body>
+</html>
